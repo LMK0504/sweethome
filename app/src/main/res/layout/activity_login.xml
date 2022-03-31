@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/home"
+    tools:context=".Login.LoginActivity">
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="400dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:maxWidth="300dp"
+        android:maxHeight="200dp"
+        android:src="@drawable/title" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/iv"
+        android:layout_centerInParent="true"
+        android:paddingRight="50dp"
+        android:paddingLeft="50dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="회원 로그인"
+            android:fontFamily="@font/jua"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+        <EditText
+            android:id="@+id/et_id"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/et_round"
+            android:hint="ID"
+            android:fontFamily="@font/jua"
+            android:inputType="text"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/et_pw"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/et_round"
+            android:hint="PW"
+            android:fontFamily="@font/jua"
+            android:inputType="textPassword"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonedit"
+            android:text="로그인"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:fontFamily="@font/jua"/>
+
+        <Button
+            android:id="@+id/btn_sign"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonedit"
+            android:text="회원가입"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:fontFamily="@font/jua"/>
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonedit"
+            android:text="아이디 / 비밀번호 찾기"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:fontFamily="@font/jua"/>
+    </LinearLayout>
+</RelativeLayout>
