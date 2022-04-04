@@ -330,7 +330,6 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
                         bundle.putString("particul",particul);
                         bundle.putString("hyperparticul",hyperparticul);
                         bundle.putString("weather",getWeather);
-
                         Message msg = handler.obtainMessage();
                         msg.setData(bundle);
                         handler.sendMessage(msg);

@@ -1,15 +1,20 @@
 package com.example.MobleSweetHome.Menu;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.MobleSweetHome.Data.RaspiData;
 import com.example.MobleSweetHome.Data.RaspiResponse;
@@ -26,10 +31,14 @@ public class FireActivity extends AppCompatActivity {
     Button returnmenu,calling;
     ImageView temperimage, gasimage;
     TextView tem,gas;
-    Integer gasdata, temdata;
+    public int gas_data, tem_data;
+
+    Handler handler = new Handler();
+
     String stgas,sttemp;
     Boolean ctl = true;
 
+    final Bundle bundle = new Bundle();
 //    TextView tv_token, tv_gas;
 //    Button btn_token;
 
@@ -39,8 +48,15 @@ public class FireActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fire);
 
         setting();
-        gasData();
-        temData();
+        gastemp_Data();
+
+
+
+
+
+//        if(gas_data >= 200 || tem_data >= 20) {
+//            calling.setEnabled(true);
+//        }
 
 //        btn_token.setOnClickListener(Token);
 
@@ -96,74 +112,53 @@ public class FireActivity extends AppCompatActivity {
         }
     };
 
-    public void gasData () {
+    public void gastemp_Data () {
         Thread thread = new Thread() {
             public void run() {
                 super.run();
                 while (ctl) {
+                    //가스
                     rs.service.Gas_Func(new RaspiData()).enqueue(new Callback<RaspiResponse>() {
                         @Override
                         public void onResponse(Call<RaspiResponse> call, Response<RaspiResponse> response) {
                             RaspiResponse result = response.body();
-                            gasdata = Integer.valueOf(result.getGas());
-                            stgas = String.valueOf(gasdata);
-//                gasdata = String.valueOf(result.getGas());
-//                Log.d(rs.TAG ,"가스"+gasdata);
-//                gas.setText(gas);
+                            gas_data = result.getGas(); // 가스 데이터
+                            stgas = String.valueOf(gas_data);
                             gas.setText(stgas);
-                            if (gasdata >300) {
+
+                            if (gas_data > 300) {
                                 gas.setTextColor(Color.parseColor("#fd5959"));
                                 gasimage.setImageResource(R.drawable.red_light);
-                                calling.setEnabled(true);
+//                                calling.setEnabled(true);
 
                             }else {
                                 gas.setTextColor(Color.parseColor("#00c73c"));
                                 gasimage.setImageResource(R.drawable.green_light);
-                                calling.setEnabled(false);
+//                                calling.setEnabled(false);
                             }
                         }
-
                         @Override
                         public void onFailure(Call<RaspiResponse> call, Throwable t) {
 
                         }
                     });
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-
-        };
-        thread.start();
-    }
-
-
-    public void temData () {
-        Thread thread =new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                while (ctl) {
+                    // 온도
                     rs.service.Temp_Humi(new RaspiData()).enqueue(new Callback<RaspiResponse>() {
                         @Override
                         public void onResponse(Call<RaspiResponse> call, Response<RaspiResponse> response) {
                             RaspiResponse result = response.body();
-                            temdata = Integer.valueOf(result.getTemp());
-                            sttemp = String.valueOf(temdata);
-
+                            tem_data = result.getTemp(); // 온도 데이터
+                            sttemp = String.valueOf(tem_data);
                             tem.setText(sttemp);
-                            if (temdata >50 ) {
+
+                            if (tem_data > 50 ) {
                                 tem.setTextColor(Color.parseColor("#fd5959"));
                                 temperimage.setImageResource(R.drawable.red_light);
-                                calling.setEnabled(true);
+//                                calling.setEnabled(true);
                             }else {
                                 tem.setTextColor(Color.parseColor("#00c73c"));
                                 temperimage.setImageResource(R.drawable.green_light);
-                                calling.setEnabled(false);
+//                                calling.setEnabled(false);
                             }
                         }
 
@@ -172,16 +167,138 @@ public class FireActivity extends AppCompatActivity {
 
                         }
                     });
+
+                    Log.v("Log" , gas_data + " , " + tem_data); // 여기까지는 데이터 확인 가능
+
+
+//                    if(gas_data >= 200 || tem_data >= 20) {
+//                        Message msg = btn_red_change.obtainMessage();
+//                        btn_red_change.sendMessage(msg);
+//                    }
+//                    else calling.setEnabled(false);
+
+
+
+//                    if (temdata > 20) {
+//                        gas.setTextColor(Color.parseColor("#fd5959"));
+//                        gasimage.setImageResource(R.drawable.red_light);
+//                        tem.setTextColor(Color.parseColor("#fd5959"));
+//                        temperimage.setImageResource(R.drawable.red_light);
+//                        calling.setEnabled(true);
+//                    } else if(gasdata > 200) {
+//                        gas.setTextColor(Color.parseColor("#00c73c"));
+//                        gasimage.setImageResource(R.drawable.green_light);
+//                        tem.setTextColor(Color.parseColor("#00c73c"));
+//                        temperimage.setImageResource(R.drawable.green_light);
+//                        calling.setEnabled(false);
+//                    }
+//                    change();
                     try {
+
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(gas_data >= 300 || tem_data >= 50) calling.setEnabled(true);
+                                else calling.setEnabled(false);
+                            }
+                        });
+
+
+//                        if(gas_data >= 200 || tem_data >= 20) {
+//                            Message msg = btn_red_change.obtainMessage();
+//                            btn_red_change.sendMessage(msg);
+//                        }
+//                        bundle.putInt("gas", gas_data);
+//                        bundle.putInt("temperature",tem_data);
+//                        Message msg = handler.obtainMessage();
+//                        msg.setData(bundle);
+//                        handler.sendMessage(msg);
+
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+//                    calling.setEnabled(true);
                 }
             }
         };
         thread.start();
     }
+
+    public void change() {
+        if (gas_data >= 200 || tem_data >= 20) {
+            calling.setEnabled(true);
+        } else {
+            calling.setEnabled(false);
+        }
+    }
+
+
+//    Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            Bundle bundle = msg.getData();
+//            tem.setText(bundle.getInt("temperature"));
+//            gas.setText(bundle.getInt("gas"));
+//
+//            if(bundle.getInt("temperature") > 20 || bundle.getInt("gas") > 200) {
+//                calling.setEnabled(true);
+//            } else {
+//                calling.setEnabled(false);
+//            }
+//        }
+//    };
+
+//    Handler btn_gray_change = new Handler() {
+//        @Override
+//        public void handleMessage(@NonNull Message msg) {
+//            super.handleMessage(msg);
+//            calling.setEnabled(false);
+//        }
+//    };
+
+
+//    public void temData () {
+//        Thread thread =new Thread() {
+//            @Override
+//            public void run() {
+//                super.run();
+//                while (ctl) {
+//                    rs.service.Temp_Humi(new RaspiData()).enqueue(new Callback<RaspiResponse>() {
+//                        @Override
+//                        public void onResponse(Call<RaspiResponse> call, Response<RaspiResponse> response) {
+//                            RaspiResponse result = response.body();
+//                            temdata = Integer.valueOf(result.getTemp());
+//                            sttemp = String.valueOf(temdata);
+//
+//                            tem.setText(sttemp);
+//                            if (temdata >50 ) {
+//                                tem.setTextColor(Color.parseColor("#fd5959"));
+//                                temperimage.setImageResource(R.drawable.red_light);
+//                                calling.setEnabled(true);
+//                            }else {
+//                                tem.setTextColor(Color.parseColor("#00c73c"));
+//                                temperimage.setImageResource(R.drawable.green_light);
+//                                calling.setEnabled(false);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<RaspiResponse> call, Throwable t) {
+//
+//                        }
+//                    });
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        };
+//        thread.start();
+//    }
 
 //    View.OnClickListener Token = new View.OnClickListener() {
 //        @Override
